@@ -1,6 +1,6 @@
-# NFish
-Node-Fish - A 'Fishing' Tool built using NodeJS
+# :warning: Currently Under Development :warning:
 
 ---
 
-# Currently Under Development.
+# NFish :fishing_pole_and_fish:
+Node-Fish - A 'Fishing' Tool built using NodeJS
