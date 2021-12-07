@@ -1,2 +1,6 @@
-# node-fish
- A 'Fishing' Tool built on NodeJS
+# NFish
+Node-Fish - A 'Fishing' Tool built using NodeJS
+
+---
+
+# Currently Under Development.
