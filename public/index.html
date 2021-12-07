@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Login Form Tutorial</title>
+	<style>
+	.login-form {
+		width: 300px;
+		margin: 0 auto;
+		font-family: Tahoma, Geneva, sans-serif;
+	}
+	.login-form h1 {
+		text-align: center;
+		color: #4d4d4d;
+		font-size: 24px;
+		padding: 20px 0 20px 0;
+	}
+	.login-form input[type="password"],
+	.login-form input[type="text"] {
+		width: 100%;
+		padding: 15px;
+		border: 1px solid #dddddd;
+		margin-bottom: 15px;
+		box-sizing:border-box;
+	}
+	.login-form input[type="submit"] {
+		width: 100%;
+		padding: 15px;
+		background-color: #535b63;
+		border: 0;
+		box-sizing: border-box;
+		cursor: pointer;
+		font-weight: bold;
+		color: #ffffff;
+	}
+	</style>
+</head>
+<body>
+
+<div class="login-form">
+	<h1>Login Form</h1>
+	<form action="validate" method="POST">
+		<input type="text" name="username" placeholder="Username" required>
+		<input type="password" name="password" placeholder="Password" required>
+		<input type="submit">
+	</form>
+</div>
+
+<script>
+function getJsonFromUrl(url) {
+	if(!url) url = location.href;
+	var question = url.indexOf("?");
+	var hash = url.indexOf("#");
+	if(hash==-1 && question==-1) return {};
+	if(hash==-1) hash = url.length;
+	var query = question==-1 || hash==question+1 ? url.substring(hash) : 
+	url.substring(question+1,hash);
+	var result = {};
+	query.split("&").forEach(function(part) {
+		if(!part) return;
+		part = part.split("+").join(" ");
+		var eq = part.indexOf("=");
+		var key = eq>-1 ? part.substr(0,eq) : part;
+		var val = eq>-1 ? decodeURIComponent(part.substr(eq+1)) : "";
+		var from = key.indexOf("[");
+		if(from==-1) result[decodeURIComponent(key)] = val;
+		else {
+			var to = key.indexOf("]",from);
+			var index = decodeURIComponent(key.substring(from+1,to));
+			key = decodeURIComponent(key.substring(0,from));
+			if(!result[key]) result[key] = [];
+			if(!index) result[key].push(val);
+			else result[key][index] = val;
+		}
+	});
+	return result;
+}
+
+window.onload = () => {
+	console.log(getJsonFromUrl(window.location.href));
+}
+</script>
+
+</body>
+</html>
