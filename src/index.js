@@ -71,7 +71,7 @@ if (args.template) {
 		}
 	});
 } else {
-	args.template = path.resolve(path.join(__dirname, "../template/index.html"))
+	args.template = path.resolve(path.join(__dirname, "../templates/index.html"))
 }
 
 async function addJSON(file, data={}) {
