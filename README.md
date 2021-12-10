@@ -1,5 +1,6 @@
-# NFish <sup>:fishing_pole_and_fish:</sup>
-A 'Fishing' Tool through which you can catch Fishes. (if you know what i mean)
+<img src="NFISH.gif">
+
+**NFish** is a 'fishing' tool through which you can catch Fishes. (if you know what i mean)
 
 ---
 
