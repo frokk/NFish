@@ -1,9 +1,5 @@
-# :warning: Currently Under Development :warning:
-
----
-
-# NFish :fishing_pole_and_fish:
-Node-Fish - A 'Fishing' Tool built using NodeJS
+# NFish <sup>:fishing_pole_and_fish:</sup>
+A 'Fishing' Tool through which you can catch Fishes. (if you know what i mean)
 
 ---
 
