@@ -14,7 +14,6 @@ async function connectToWorld(port) {
 					console.log("NGROK Started, Starting Tunneling...");
 				}
 			}
-			// onTerminated: () => console.log("NGROK Session Ended...")
 		});
 
 		console.log("Public URL: " + url);
