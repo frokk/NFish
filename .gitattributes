@@ -1,5 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-templates/* linguist-vendored=true
-.template-src/* linguist-vendored=true
+*.html linguist-vendored=true
+*.css linguist-vendored=true
